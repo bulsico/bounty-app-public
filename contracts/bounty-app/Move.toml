@@ -1,0 +1,15 @@
+[package]
+name = "BountyApp"
+version = "1.0.0"
+authors = []
+
+[addresses]
+bounty_app_addr = "_"
+
+[dev-addresses]
+bounty_app_addr = "0x999"
+
+[dependencies]
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", rev = "mainnet", subdir = "aptos-move/framework/aptos-framework" }
+
+[dev-dependencies]
