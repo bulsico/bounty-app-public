@@ -1,0 +1,21 @@
+{
+  "name": "node-scripts",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "create-bounty": "ts-node src/script/create_bounty.ts",
+    "get-bounty": "ts-node src/script/get_bounty.ts",
+    "get-last-bounty-from-db": "ts-node src/script/get_last_bounty_from_db.ts"
+  },
+  "dependencies": {
+    "@aptos-labs/ts-sdk": "^1.26.0",
+    "@thalalabs/surf": "^1.7.3",
+    "dotenv": "^16.3.1",
+    "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.8",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
