@@ -9,7 +9,7 @@ import {
   getTotalBountyValueOnServer,
 } from "@/app/actions";
 
-export const OverviewAnalytics = async () => {
+export const OverviewAnalytics = () => {
   const fetchTotalValue = async () => {
     return await getTotalBountyValueOnServer();
   };
