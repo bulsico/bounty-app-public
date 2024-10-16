@@ -133,7 +133,7 @@ export const CreateBounty = () => {
   };
 
   return (
-    <Card>
+    <Card className="sm:pb-0 pb-16">
       <CardHeader>
         <CardTitle>Create a new bounty</CardTitle>
       </CardHeader>
