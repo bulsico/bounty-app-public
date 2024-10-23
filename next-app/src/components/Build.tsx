@@ -8,7 +8,8 @@ import { NETWORK } from "@/lib/aptos";
 import { getBuildOnServer } from "@/app/actions";
 import { convertBuildStatusToHumanReadable } from "@/lib/type/build";
 import { SubmitBuildForReview } from "@/components/SubmitBuildForReview";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { truncateAddress, useWallet } from "@aptos-labs/wallet-adapter-react";
+import { getAnsNameOrTruncatedAddr } from "@/lib/clientOnlyUtils";
 
 interface BuildProps {
   buildObjAddr: `0x${string}`;
@@ -25,6 +26,14 @@ export const Build = ({ buildObjAddr }: BuildProps) => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: [buildObjAddr],
     queryFn: fetchData,
+  });
+
+  const fetchAnsData = async () => {
+    return await getAnsNameOrTruncatedAddr(data?.build.creator_addr);
+  };
+  const { data: ansNameOrTruncatedAddr } = useQuery({
+    queryKey: [`${data?.build.creator_addr}-ans`],
+    queryFn: fetchAnsData,
   });
 
   if (isLoading) {
@@ -65,7 +74,7 @@ export const Build = ({ buildObjAddr }: BuildProps) => {
                         rel="noreferrer"
                         className="text-blue-600 dark:text-blue-300"
                       >
-                        {data.build.build_obj_addr}
+                        {truncateAddress(data.build.build_obj_addr)}
                       </a>
                     </p>
                   ),
@@ -80,7 +89,7 @@ export const Build = ({ buildObjAddr }: BuildProps) => {
                         rel="noreferrer"
                         className="text-blue-600 dark:text-blue-300"
                       >
-                        {data.build.bounty_obj_addr}
+                        View detail
                       </a>
                     </p>
                   ),
@@ -95,7 +104,7 @@ export const Build = ({ buildObjAddr }: BuildProps) => {
                       >
                         {data.build.creator_addr == account?.address
                           ? "Me"
-                          : data.build.creator_addr}
+                          : ansNameOrTruncatedAddr}
                       </a>
                     </p>
                   ),

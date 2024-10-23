@@ -1,11 +1,11 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
 
 import { Build, convertBuildStatusToHumanReadable } from "@/lib/type/build";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { DataTableRowActions } from "@/components/build-board/data-table-row-actions";
+import { AddressTableCell } from "@/components/AddressTableCell";
 
 export const columns: ColumnDef<Build>[] = [
   {
@@ -13,14 +13,7 @@ export const columns: ColumnDef<Build>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Builder" />
     ),
-    cell: ({ row }) => (
-      <a
-        href={`/profile/${row.original.creator_addr}`}
-        className="w-[80px] text-blue-600 dark:text-blue-300"
-      >
-        {truncateAddress(row.getValue("creator_addr"))}
-      </a>
-    ),
+    cell: ({ row }) => <AddressTableCell addr={row.original.creator_addr} />,
     enableSorting: false,
   },
   {

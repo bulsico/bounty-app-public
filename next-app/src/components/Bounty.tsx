@@ -2,15 +2,23 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { convertAmountFromOnChainToHumanReadable } from "@aptos-labs/ts-sdk";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { truncateAddress, useWallet } from "@aptos-labs/wallet-adapter-react";
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { LabelValueGrid } from "@/components/LabelValueGrid";
 import { APT_UNIT, getSurfClient, KNOWN_PAYMENT, NETWORK } from "@/lib/aptos";
 import { getBountyOnServer } from "@/app/actions";
 import { isMaxUnixTimestamp } from "@/lib/time";
 import { CreateBuild } from "@/components/CreateBuild";
 import { convertBountyStatusToHumanReadable } from "@/lib/type/bounty";
+import { getAnsNameOrTruncatedAddr } from "@/lib/clientOnlyUtils";
+import { EndBounty } from "./EndBounty";
 
 interface BountyProps {
   bountyObjAddr: `0x${string}`;
@@ -39,10 +47,17 @@ export const Bounty = ({ bountyObjAddr }: BountyProps) => {
       existsBuild,
     };
   };
-
   const { data, isLoading, isError, error } = useQuery({
     queryKey: [bountyObjAddr, account?.address],
     queryFn: fetchData,
+  });
+
+  const fetchAnsData = async () => {
+    return await getAnsNameOrTruncatedAddr(data?.bounty.creator_addr);
+  };
+  const { data: ansNameOrTruncatedAddr } = useQuery({
+    queryKey: [`${data?.bounty.creator_addr}-ans`],
+    queryFn: fetchAnsData,
   });
 
   if (isLoading) {
@@ -83,7 +98,7 @@ export const Bounty = ({ bountyObjAddr }: BountyProps) => {
                         rel="noreferrer"
                         className="text-blue-600 dark:text-blue-300"
                       >
-                        {data.bounty.bounty_obj_addr}
+                        {truncateAddress(data.bounty.bounty_obj_addr)}
                       </a>
                     </p>
                   ),
@@ -96,7 +111,9 @@ export const Bounty = ({ bountyObjAddr }: BountyProps) => {
                         href={`/profile/${data.bounty.creator_addr}`}
                         className="text-blue-600 dark:text-blue-300"
                       >
-                        {data.bounty.creator_addr === account?.address ? "Me" : data.bounty.creator_addr}
+                        {data.bounty.creator_addr === account?.address
+                          ? "Me"
+                          : ansNameOrTruncatedAddr}
                       </a>
                     </p>
                   ),
@@ -123,16 +140,16 @@ export const Bounty = ({ bountyObjAddr }: BountyProps) => {
                     </p>
                   ),
                 },
-                {
-                  label: "Last update timestamp",
-                  value: (
-                    <p>
-                      {new Date(
-                        data.bounty.last_update_timestamp * 1000
-                      ).toLocaleString()}
-                    </p>
-                  ),
-                },
+                // {
+                //   label: "Last update timestamp",
+                //   value: (
+                //     <p>
+                //       {new Date(
+                //         data.bounty.last_update_timestamp * 1000
+                //       ).toLocaleString()}
+                //     </p>
+                //   ),
+                // },
                 {
                   label: "Title",
                   value: <p>{data.bounty.title}</p>,
@@ -220,10 +237,18 @@ export const Bounty = ({ bountyObjAddr }: BountyProps) => {
             />
           </div>
         </CardContent>
+        <CardFooter className="justify-center">
+          <div className="flex flex-row items-center space-x-4">
+            {bountyStatus === "Open" && !data.existsBuild && (
+              <CreateBuild bountyObjAddr={bountyObjAddr} />
+            )}
+            {bountyStatus === "Open" &&
+              data.bounty.creator_addr === account?.address && (
+                <EndBounty bountyObjAddr={bountyObjAddr} />
+              )}
+          </div>
+        </CardFooter>
       </Card>
-      {bountyStatus === "Open" && !data.existsBuild && (
-        <CreateBuild bountyObjAddr={bountyObjAddr} />
-      )}
     </div>
   );
 };

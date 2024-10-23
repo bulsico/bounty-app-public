@@ -35,7 +35,7 @@ async fn execute_end_bounty_events_sql(
                     bounties::bounty_obj_addr.eq(bounties::bounty_obj_addr),
                     bounties::creator_addr.eq(bounties::creator_addr),
                     bounties::create_timestamp.eq(bounties::create_timestamp),
-                    bounties::end_timestamp.eq(bounties::end_timestamp),
+                    bounties::end_timestamp.eq(excluded(bounties::end_timestamp)),
                     bounties::last_update_timestamp.eq(excluded(bounties::last_update_timestamp)),
                     bounties::title.eq(bounties::title),
                     bounties::description_link.eq(bounties::description_link),

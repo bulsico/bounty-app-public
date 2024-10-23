@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   ColumnDef,
+  ColumnFiltersState,
   SortingState,
   flexRender,
   getCoreRowModel,
@@ -26,6 +27,26 @@ import {
 import { getBuildsOnServer } from "@/app/actions";
 import { useQuery } from "@tanstack/react-query";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
+import { DataTableToolbar } from "@/components/ui/data-table-toolbar";
+
+export const filterOptions = [
+  {
+    value: "in-progress",
+    label: "In progress",
+  },
+  {
+    value: "ready-for-review",
+    label: "Ready for review",
+  },
+  {
+    value: "cancelled",
+    label: "Cancelled",
+  },
+  {
+    value: "completed",
+    label: "Completed",
+  },
+];
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -39,23 +60,57 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: "last_update_timestamp", desc: true },
   ]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
   const [{ pageIndex, pageSize }, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: 10,
   });
 
   const fetchData = async () => {
+    let dbFilter = `creator_addr = '${userAddr}'`;
+    const filter = columnFilters.reduce((acc, filter) => {
+      acc[filter.id] = filter.value;
+      return acc;
+    }, {} as Record<string, any>);
+    if (filter?.build_status) {
+      let filteredStatus = [];
+      console.log("filter build_status", filter.status);
+      if (filter.build_status.includes("in-progress")) {
+        filteredStatus.push(1);
+      }
+      if (filter.build_status.includes("ready-for-review")) {
+        filteredStatus.push(2);
+      }
+      if (filter.build_status.includes("cancelled")) {
+        filteredStatus.push(3);
+      }
+      if (filter.build_status.includes("completed")) {
+        filteredStatus.push(4);
+      }
+      if (filteredStatus.length > 0) {
+        dbFilter += ` AND build_status IN (${filteredStatus.join(",")})`;
+      }
+    }
+
     return await getBuildsOnServer({
       page: pageIndex + 1,
       limit: pageSize,
       sortedBy: sorting[0]?.id,
       order: sorting[0]?.desc ? "DESC" : "ASC",
-      filter: `creator_addr = '${userAddr}'`,
+      filter: dbFilter,
     });
   };
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: [`${userAddr}-builds`, pageIndex, pageSize, sorting],
+    queryKey: [
+      `${userAddr}-builds`,
+      pageIndex,
+      pageSize,
+      sorting,
+      columnFilters,
+    ],
     queryFn: fetchData,
   });
 
@@ -72,11 +127,13 @@ export function DataTable<TData, TValue>({
     columns,
     state: {
       sorting,
+      columnFilters,
       pagination,
     },
     pageCount: Math.ceil(data?.total || 0 / pageSize),
     enableRowSelection: true,
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -85,6 +142,7 @@ export function DataTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     manualPagination: true,
+    manualFiltering: true,
   });
 
   if (isLoading) {
@@ -97,6 +155,11 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
+      <DataTableToolbar
+        table={table}
+        filterOptions={filterOptions}
+        filterColumnId="build_status"
+      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>

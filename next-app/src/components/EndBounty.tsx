@@ -10,11 +10,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { TransactionOnExplorer } from "@/components/ExplorerLink";
 import { ABI } from "@/lib/abi/bounty_app_abi";
 
-interface CreateBuildProps {
+interface EndBountyProps {
   bountyObjAddr: `0x${string}`;
 }
 
-export function CreateBuild({ bountyObjAddr }: CreateBuildProps) {
+export function EndBounty({ bountyObjAddr }: EndBountyProps) {
   const { toast } = useToast();
   const { connected, account } = useWallet();
   const { client: walletClient } = useWalletClient();
@@ -28,9 +28,9 @@ export function CreateBuild({ bountyObjAddr }: CreateBuildProps) {
 
     walletClient
       .useABI(ABI)
-      .entry_create_build({
+      .end_bounty({
         type_arguments: [],
-        arguments: [undefined, bountyObjAddr],
+        arguments: [bountyObjAddr],
       })
       .then((committedTransaction) => {
         return getAptosClient().waitForTransaction({
@@ -48,20 +48,17 @@ export function CreateBuild({ bountyObjAddr }: CreateBuildProps) {
       })
       .then(() => {
         queryClient.invalidateQueries({
-          queryKey: [`${bountyObjAddr}-builds`],
-        });
-        queryClient.invalidateQueries({
           queryKey: [account?.address],
         });
         queryClient.invalidateQueries({
-          queryKey: ["totalBuilds"],
+          queryKey: [bountyObjAddr],
         });
       })
       .catch((error) => {
         console.error("Error", error);
         toast({
           title: "Error",
-          description: "Failed to create a build",
+          description: "Failed to end a bounty",
         });
       });
   };
@@ -74,7 +71,7 @@ export function CreateBuild({ bountyObjAddr }: CreateBuildProps) {
         onClick={onSignAndSubmitTransaction}
         className="w-40 self-start col-span-2"
       >
-        Work on the bounty
+        End the bounty
       </Button>
     </div>
   );

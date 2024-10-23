@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { LabelValueGrid } from "@/components/LabelValueGrid";
 import { APT_UNIT, NETWORK } from "@/lib/aptos";
 import { getUserStatOnServer } from "@/app/actions";
+import { getAnsNameOrTruncatedAddr } from "@/lib/clientOnlyUtils";
 
 type UserStatProps = {
   userAddr: `0x${string}`;
@@ -18,10 +19,17 @@ export const UserStat = ({ userAddr }: UserStatProps) => {
       userAddr,
     });
   };
-
   const { data, isLoading, isError, error } = useQuery({
     queryKey: [userAddr],
     queryFn: fetchData,
+  });
+
+  const fetchAnsData = async () => {
+    return await getAnsNameOrTruncatedAddr(userAddr);
+  };
+  const { data: ansNameOrTruncatedAddr } = useQuery({
+    queryKey: [`${userAddr}-ans`],
+    queryFn: fetchAnsData,
   });
 
   if (isLoading) {
@@ -50,12 +58,12 @@ export const UserStat = ({ userAddr }: UserStatProps) => {
                 value: (
                   <p>
                     <a
-                      href={`https://explorer.aptoslabs.com/account/${data.userStat.user_addr}?network=${NETWORK}`}
+                      href={`https://explorer.aptoslabs.com/account/${userAddr}?network=${NETWORK}`}
                       className="text-blue-600 dark:text-blue-300"
                       target="_blank"
                       rel="noreferrer"
                     >
-                      {data.userStat.user_addr}
+                      {ansNameOrTruncatedAddr}
                     </a>
                   </p>
                 ),

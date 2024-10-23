@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { TotalBountyValue } from "./TotalBountyValue";
 
-export const MobileMenuBar = () => {
+export const RootSidebarMobile = () => {
   const { account, connected } = useWallet();
   const [open, setOpen] = useState(false);
 
@@ -37,18 +37,19 @@ export const MobileMenuBar = () => {
                   setOpen={setOpen}
                 />
                 <MobileMenuItem
-                  href={`/profile/${account?.address}`}
-                  icon={User}
-                  text="Profile"
-                  linkDisabled={!connected}
-                  setOpen={setOpen}
-                />
-                <MobileMenuItem
                   href="/analytics"
                   icon={BarChart}
                   text="Analytics"
                   setOpen={setOpen}
                 />
+                {connected && (
+                  <MobileMenuItem
+                    href={`/profile/${account?.address}`}
+                    icon={User}
+                    text="Profile"
+                    setOpen={setOpen}
+                  />
+                )}
               </div>
             </div>
             <div className="mt-auto p-4 space-y-4">

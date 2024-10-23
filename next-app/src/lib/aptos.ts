@@ -3,7 +3,7 @@ import { createSurfClient } from "@thalalabs/surf";
 
 import { ABI } from "@/lib/abi/bounty_app_abi";
 
-export const NETWORK = Network.TESTNET;
+export const NETWORK = process.env.NEXT_PUBLIC_NETWORK as Network;
 
 const APTOS_CLIENT = new Aptos(
   new AptosConfig({

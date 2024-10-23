@@ -17,13 +17,14 @@ export const RootSidebar = () => {
         </div>
         <div className="space-y-4">
           <SidebarItem href="/create" icon={Plus} text="Create" />
-          <SidebarItem
-            href={`/profile/${account?.address}`}
-            icon={User}
-            text="Profile"
-            linkDisabled={!connected}
-          />
           <SidebarItem href="/analytics" icon={BarChart} text="Analytics" />
+          {connected && (
+            <SidebarItem
+              href={`/profile/${account?.address}`}
+              icon={User}
+              text="Profile"
+            />
+          )}
         </div>
       </div>
       <div className="mt-auto p-4 space-y-4">

@@ -1,13 +1,13 @@
 import { Wallet } from "@/components/Wallet";
-import { MobileMenuBar } from "./MobileMenuBar";
+import { RootSidebarMobile } from "./RootSidebarMobile";
 
 export const RootHeader = () => {
   return (
     <div className="flex justify-between items-center gap-6 w-full">
-      <MobileMenuBar />
+      <RootSidebarMobile />
       <div className="flex flex-col gap-2 md:gap-3">
         <h1 className="text-xl font-semibold tracking-tight">
-          <a href="/">Aptos Bounty App</a>
+          <a href="/">Aptos Bounties</a>
         </h1>
       </div>
       <div className="flex space-x-2 items-center justify-center">

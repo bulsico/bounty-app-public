@@ -18,8 +18,8 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: "Bounty App",
-  description: "Bounty App",
+  title: "Aptos Bounties",
+  description: "Aptos Bounties",
 };
 
 const RootLayout = ({ children }: PropsWithChildren) => {

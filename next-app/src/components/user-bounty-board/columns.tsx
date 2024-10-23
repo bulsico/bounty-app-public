@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { convertAmountFromOnChainToHumanReadable } from "@aptos-labs/ts-sdk";
 
-import { Bounty } from "@/lib/type/bounty";
+import { Bounty, convertBountyStatusToHumanReadable } from "@/lib/type/bounty";
 import { APT_UNIT } from "@/lib/aptos";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 
@@ -60,7 +60,7 @@ export const columns: ColumnDef<Bounty>[] = [
     ),
     cell: ({ row }) => (
       <div className="w-[160px]">
-        {row.original.end_timestamp < Date.now() / 1000 ? "Closed" : "Open"}
+        {convertBountyStatusToHumanReadable(row.original)}
       </div>
     ),
     enableSorting: false,

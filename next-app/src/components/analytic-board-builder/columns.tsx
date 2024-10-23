@@ -1,12 +1,12 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
 import { convertAmountFromOnChainToHumanReadable } from "@aptos-labs/ts-sdk";
 
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { APT_UNIT } from "@/lib/aptos";
 import { UserStat } from "@/lib/type/user_stat";
+import { AddressTableCell } from "@/components/AddressTableCell";
 
 export const columns: ColumnDef<UserStat>[] = [
   {
@@ -14,16 +14,7 @@ export const columns: ColumnDef<UserStat>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="User address" />
     ),
-    cell: ({ row }) => (
-      <div className="w-[100px]">
-        <a
-          href={`/profile/${row.getValue("user_addr")}`}
-          className="text-blue-600 dark:text-blue-300"
-        >
-          {truncateAddress(row.getValue("user_addr"))}
-        </a>
-      </div>
-    ),
+    cell: ({ row }) => <AddressTableCell addr={row.original.user_addr} />,
     enableSorting: false,
   },
   {
