@@ -10,7 +10,8 @@ import { PropsWithChildren } from "react";
 import { RootHeader } from "@/components/RootHeader";
 import { WrongNetworkAlert } from "@/components/WrongNetworkAlert";
 import { QueryProvider } from "@/components/providers/QueryProvider";
-import { RootSidebar } from "@/components/RootSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -39,23 +40,23 @@ const RootLayout = ({ children }: PropsWithChildren) => {
         >
           <QueryProvider>
             <WalletProvider>
-              <div className="flex flex-col w-full h-screen overflow-hidden">
-                <header className="flex-shrink-0 h-15 py-6 px-3 border-b bg-white dark:bg-black z-10">
-                  <RootHeader />
-                </header>
-                <WrongNetworkAlert />
-                <Toaster />
-                <div className="flex flex-1 overflow-hidden">
-                  <aside className="hidden sm:block w-64 flex-shrink-0 p-4 overflow-y-auto bg-gray-100 dark:bg-gray-800">
-                    <RootSidebar />
-                  </aside>
-                  <main className="flex-grow overflow-hidden relative">
-                    <div className="absolute inset-0 h-full overflow-y-auto overscroll-contain">
-                      <div className="min-h-full p-4">{children}</div>
-                    </div>
-                  </main>
+              <SidebarProvider>
+                <div className="flex flex-col w-full h-screen overflow-hidden">
+                  <WrongNetworkAlert />
+                  <Toaster />
+                  <header className="flex-shrink-0 h-15 py-6 px-3 border-b bg-white dark:bg-black z-10">
+                    <RootHeader />
+                  </header>
+                  <div className="flex flex-1 overflow-hidden">
+                    <AppSidebar />
+                    <main className="flex-grow overflow-hidden relative">
+                      <div className="absolute inset-0 h-full overflow-y-auto overscroll-contain">
+                        <div className="min-h-full p-4">{children}</div>
+                      </div>
+                    </main>
+                  </div>
                 </div>
-              </div>
+              </SidebarProvider>
             </WalletProvider>
           </QueryProvider>
         </ThemeProvider>

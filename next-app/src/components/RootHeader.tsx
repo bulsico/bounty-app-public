@@ -1,12 +1,12 @@
 import { Wallet } from "@/components/Wallet";
-import { RootSidebarMobile } from "./RootSidebarMobile";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export const RootHeader = () => {
   return (
     <div className="flex justify-between items-center gap-6 w-full">
-      <RootSidebarMobile />
-      <div className="flex flex-col gap-2 md:gap-3">
-        <h1 className="text-xl font-semibold tracking-tight">
+      <SidebarTrigger />
+      <div className="flex flex-col gap-2">
+        <h1 className="text-xl font-semibold tracking-tight sm:hidden">
           <a href="/">Aptos Bounties</a>
         </h1>
       </div>
